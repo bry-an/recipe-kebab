@@ -17,7 +17,7 @@
 </script>
 
 <section>
-	<h1 class="header">Welcome to Recipe Monster!</h1>
+	<h1 class="header">Welcome to Recipe Kebab!</h1>
 
 	<label for="type-input" class="label">What Would You Like To Cook?</label>
 	<input bind:value={typeSearch} type="text" id="type-input" />
