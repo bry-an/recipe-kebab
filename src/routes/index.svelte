@@ -9,7 +9,7 @@
 
 	let ingredients = [];
 
-	const getFirstFiveIngredients = getIngredients(5);
+	const getFirstThreeIngredients = getIngredients(3);
 	function getRecipes() {
 		if (!typeSearch.length) {
 			validationError = true;
@@ -22,14 +22,14 @@
 	}
 	function addRecipe(event) {
 		kebab = kebab.concat(event.detail);
-		ingredients = uniq(ingredients.concat(getFirstFiveIngredients(event.detail.ingredients)));
+		ingredients = uniq(ingredients.concat(getFirstThreeIngredients(event.detail.ingredients)));
 	}
 	function removeRecipe(event) {
 		kebab = kebab.filter((kebabItem) => kebabItem.title !== event.detail.title);
 		// have to calculate all recipes' ingredients again in case some recipes have same ingredients
 		const localIngredients = [];
 		kebab.forEach((kebabItem) => {
-			localIngredients = localIngredients.concat(getFirstFiveIngredients(kebabItem.ingredients));
+			localIngredients = localIngredients.concat(getFirstThreeIngredients(kebabItem.ingredients));
 		});
 		ingredients = uniq(localIngredients);
 	}
@@ -65,14 +65,24 @@
 			{/if}
 		</section>
 	</div>
+	<hr />
 
-	<label for="type-input" class="label">What Would You Like To Cook?</label>
-	<input bind:value={typeSearch} type="text" id="type-input" />
+	<section class="input-container">
+		<div>
+			<label for="type-input" class="label"><h3>Build from your ingredients</h3></label>
+			<input bind:value={typeSearch} type="text" id="type-input" />
 
-	<button on:click={getRecipes}>Get Recipes</button>
-	{#if validationError}
-		<p class="error">You must enter a search term</p>
-	{/if}
+			<button on:click={getRecipes}>Get Recipes</button>
+			{#if validationError}
+				<p class="error">You must enter a search term</p>
+			{/if}
+		</div>
+		<div>
+			<h3>Build from recommended pairings with your selected ingredients</h3>
+			<button>Recommended Recipes</button>
+		</div>
+	</section>
+
 	<ul>
 		{#each recipes as recipe}
 			<li>
@@ -82,7 +92,10 @@
 	</ul>
 </section>
 
-<style>
+<style lang="scss">
+	button {
+		cursor: pointer;
+	}
 	ul {
 		list-style-type: none;
 		padding: 0;
@@ -98,6 +111,12 @@
 	}
 	.label {
 		display: block;
+	}
+	.input-container {
+		display: flex;
+		div {
+			width: 50%;
+		}
 	}
 	.error {
 		color: red;
