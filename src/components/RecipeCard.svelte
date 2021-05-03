@@ -1,16 +1,25 @@
+<script context="module">
+	export const getIngredients = (num) => (ingredients) => take(num, ingredients.split(','));
+</script>
+
 <script>
+	import take from 'ramda/src/take';
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	function addRecipe(recipe) {
 		dispatch('addRecipe', recipe);
 	}
+	function removeRecipe(recipe) {
+		dispatch('removeRecipe', recipe);
+	}
 	let recipeAdded = false;
 	$: if (recipeAdded === true) {
 		addRecipe(recipe);
+	} else {
+		removeRecipe(recipe);
 	}
-
-	const firstTwoIngredients = (ingredients) => ingredients.split(',').slice(0, 2);
+	const firstTwoIngredients = getIngredients(2);
 	export let recipe = {};
 </script>
 
@@ -25,7 +34,7 @@
 	{/if}
 </div>
 <input type="checkbox" id="add-recipe-to-checkbox" bind:checked={recipeAdded} />
-<label for="add-recipe-to-kebab">Add this recipe to your kebab! {recipeAdded}</label>
+<label for="add-recipe-to-kebab">Add this recipe to your kebab!</label>
 
 <p>
 	This recipe combines the flavor of {firstTwoIngredients(recipe.ingredients)[0]} with the delightful
