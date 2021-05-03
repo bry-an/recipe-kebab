@@ -1,5 +1,8 @@
 <script context="module">
-	export const getIngredients = (num) => (ingredients) => take(num, ingredients.split(','));
+	import map from 'ramda/src/map';
+	import trim from 'ramda/src/trim';
+	export const getIngredients = (num) => (ingredients) =>
+		take(num, map(trim, ingredients.split(',')));
 </script>
 
 <script>
