@@ -1,6 +1,12 @@
 <script>
 	import uniq from 'ramda/src/uniq';
+	import when from 'ramda/src/when';
+	import map from 'ramda/src/map';
+	import propEq from 'ramda/src/propEq';
+	import assoc from 'ramda/src/assoc';
+
 	import RecipeCard from '../components/RecipeCard.svelte';
+	import KebabItem from '../components/KebabItem.svelte';
 	import { getIngredients } from '../components/RecipeCard.svelte';
 	let typeSearch = '';
 	let validationError = false;
@@ -18,13 +24,15 @@
 		validationError = false;
 		fetch(`http://brypro.xyz/http://www.recipepuppy.com/api/?q=${typeSearch}`)
 			.then((res) => res.json())
-			.then((data) => (recipes = data.results));
+			.then((data) => (recipes = data.results.map((recipe) => ({ ...recipe, added: false }))));
 	}
 	function addRecipe(event) {
+		recipes = map(when(propEq('title', event.detail.title), assoc('added', true)), recipes);
 		kebab = kebab.concat(event.detail);
 		ingredients = uniq(ingredients.concat(getFirstThreeIngredients(event.detail.ingredients)));
 	}
 	function removeRecipe(event) {
+		recipes = map(when(propEq('title', event.detail.title), assoc('added', false)), recipes);
 		kebab = kebab.filter((kebabItem) => kebabItem.title !== event.detail.title);
 		// have to calculate all recipes' ingredients again in case some recipes have same ingredients
 		const localIngredients = kebab.reduce(
@@ -46,7 +54,7 @@
 			{:else}
 				<ul>
 					{#each kebab as kebabItem (kebabItem.title)}
-						<li>{kebabItem.title}</li>
+						<li><KebabItem item={kebabItem} on:removeItem={removeRecipe} /></li>
 					{/each}
 				</ul>
 			{/if}

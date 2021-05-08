@@ -9,18 +9,11 @@
 	import take from 'ramda/src/take';
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
+	$: recipeAdded = recipe.added;
+	$: buttonText = recipeAdded ? 'Remove from kebab' : 'Add to kebab';
 
-	function addRecipe(recipe) {
-		dispatch('addRecipe', recipe);
-	}
-	function removeRecipe(recipe) {
-		dispatch('removeRecipe', recipe);
-	}
-	let recipeAdded = false;
-	$: if (recipeAdded === true) {
-		addRecipe(recipe);
-	} else {
-		removeRecipe(recipe);
+	function handleAddRemove() {
+		dispatch(recipeAdded ? 'removeRecipe' : 'addRecipe', recipe);
 	}
 	const firstTwoIngredients = getIngredients(2);
 	export let recipe = {};
@@ -36,8 +29,7 @@
 		<p>No image available, but I bet it looks great</p>
 	{/if}
 </div>
-<input type="checkbox" id="add-recipe-to-checkbox" bind:checked={recipeAdded} />
-<label for="add-recipe-to-kebab">Add this recipe to your kebab!</label>
+<button on:click={handleAddRemove}>{buttonText}</button>
 
 <p>
 	This recipe combines the flavor of {firstTwoIngredients(recipe.ingredients)[0]} with the delightful
