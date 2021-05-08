@@ -16,7 +16,7 @@
 			return;
 		}
 		validationError = false;
-		fetch(`https://cors-anywhere.herokuapp.com/http://www.recipepuppy.com/api/?q=${typeSearch}`)
+		fetch(`http://brypro.xyz/http://www.recipepuppy.com/api/?q=${typeSearch}`)
 			.then((res) => res.json())
 			.then((data) => (recipes = data.results));
 	}
@@ -27,10 +27,11 @@
 	function removeRecipe(event) {
 		kebab = kebab.filter((kebabItem) => kebabItem.title !== event.detail.title);
 		// have to calculate all recipes' ingredients again in case some recipes have same ingredients
-		const localIngredients = [];
-		kebab.forEach((kebabItem) => {
-			localIngredients = localIngredients.concat(getFirstThreeIngredients(kebabItem.ingredients));
-		});
+		const localIngredients = kebab.reduce(
+			(ingredients, kebabItem) =>
+				ingredients.concat(getFirstThreeIngredients(kebabItem.ingredients)),
+			[]
+		);
 		ingredients = uniq(localIngredients);
 	}
 </script>
@@ -44,7 +45,7 @@
 				Your kebab is empty! Search for recipes and build a tasty kebab.
 			{:else}
 				<ul>
-					{#each kebab as kebabItem}
+					{#each kebab as kebabItem (kebabItem.title)}
 						<li>{kebabItem.title}</li>
 					{/each}
 				</ul>
@@ -56,7 +57,7 @@
 				No ingredients yet.
 			{:else}
 				<ul>
-					{#each ingredients as ingredient}
+					{#each ingredients as ingredient (ingredient)}
 						<li class="ingredients-list-item">
 							{ingredient}
 						</li>
@@ -84,7 +85,7 @@
 	</section>
 
 	<ul>
-		{#each recipes as recipe}
+		{#each recipes as recipe (recipe.title)}
 			<li>
 				<RecipeCard bind:recipe on:addRecipe={addRecipe} on:removeRecipe={removeRecipe} />
 			</li>
