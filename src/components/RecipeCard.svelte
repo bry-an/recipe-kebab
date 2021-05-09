@@ -42,4 +42,7 @@
 		display: block;
 		padding: 1rem 0;
 	}
+	a {
+		text-decoration: none;
+	}
 </style>
