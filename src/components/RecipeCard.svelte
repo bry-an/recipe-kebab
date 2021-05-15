@@ -35,7 +35,6 @@
 	This recipe combines the flavor of {firstTwoIngredients(recipe.ingredients)[0]} with the delightful
 	taste of {firstTwoIngredients(recipe.ingredients)[1]}
 </p>
-<hr />
 
 <style>
 	.recipe-image {
